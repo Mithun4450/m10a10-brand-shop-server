@@ -25,10 +25,13 @@ const client = new MongoClient(uri, {
 async function run() {
 
   const brandsCollection = client.db("brandsDB").collection("brands");
+  const productsCollection = client.db("productsDB").collection("products");
 
   try {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
+
+    // :::::::::  Brands Data ::::::::::
 
     app.post('/brands', async(req, res) =>{
       const brand = req.body;
@@ -54,6 +57,35 @@ async function run() {
       console.log("delete this", id);
       const query = {_id: new ObjectId(id) };
       const result = await brandsCollection.deleteOne(query);
+      res.send(result);
+
+    })
+    // :::::::::  Products Data ::::::::::
+
+    app.post('/products', async(req, res) =>{
+      const product = req.body;
+      const result = await productsCollection.insertOne(product);
+      res.send(result);
+    })
+
+    app.get('/products', async(req, res) =>{
+      const cursor = productsCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    })
+
+    app.get('/products/:id', async(req, res) =>{
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)};
+      const product = await productsCollection.findOne(query);
+      res.send(product);
+   })
+
+    app.delete('/products/:id', async(req, res) =>{
+      const id = req.params.id;
+      console.log("delete this", id);
+      const query = {_id: new ObjectId(id) };
+      const result = await productsCollection.deleteOne(query);
       res.send(result);
 
     })
