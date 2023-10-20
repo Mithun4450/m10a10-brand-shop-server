@@ -68,19 +68,34 @@ async function run() {
       res.send(result);
     })
 
-    app.get('/products', async(req, res) =>{
-      const cursor = productsCollection.find();
+    // app.get('/products', async(req, res) =>{
+    //   const cursor = productsCollection.find();
+    //   const result = await cursor.toArray();
+    //   res.send(result);
+    // })
+
+
+
+    
+    app.get('/products/:brandName', async(req, res) =>{
+      const brandName = req.params.brandName;
+      const query = {"brandName": brandName};
+      console.log("dekhi", brandName)
+      const cursor = productsCollection.find(query);
       const result = await cursor.toArray();
       res.send(result);
+      
     })
 
+   
     app.get('/products/:id', async(req, res) =>{
       const id = req.params.id;
       const query = {_id: new ObjectId(id)};
       const product = await productsCollection.findOne(query);
       res.send(product);
-   })
+    })
 
+    
     app.delete('/products/:id', async(req, res) =>{
       const id = req.params.id;
       console.log("delete this", id);
