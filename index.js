@@ -26,6 +26,7 @@ async function run() {
 
   const brandsCollection = client.db("brandsDB").collection("brands");
   const productsCollection = client.db("productsDB").collection("products");
+  const cartsCollection = client.db("cartsDB").collection("carts");
 
   try {
     // Connect the client to the server	(optional starting in v4.7)
@@ -123,6 +124,36 @@ async function run() {
     console.log(query)
     const product = await productsCollection.findOne(query);
     res.send(product);
+
+  })
+
+
+   // :::::::::  Carts Data ::::::::::
+
+   app.post('/carts', async(req, res) =>{
+    const cart = req.body;
+    const result = await cartsCollection.insertOne(cart);
+    res.send(result);
+  })
+
+  app.get('/carts', async(req, res) =>{
+    const cursor = cartsCollection.find();
+    const result = await cursor.toArray();
+    res.send(result);
+  })
+
+  app.get('/carts/:id', async(req, res) =>{
+    const id = req.params.id;
+    const query = {_id: new ObjectId(id)};
+    const cart = await cartsCollection.findOne(query);
+    res.send(cart);
+ })
+
+  app.delete('/carts/:id', async(req, res) =>{
+    const id = req.params.id;
+    const query = {_id: new ObjectId(id) };
+    const result = await cartsCollection.deleteOne(query);
+    res.send(result);
 
   })
 
